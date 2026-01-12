@@ -12,12 +12,13 @@
 
 / {
         behaviors {
-                // Triple-tap ESC to clear Bluetooth and enter pairing mode
-                td_esc_bt: tap_dance_esc_bt {
-                        compatible = "zmk,behavior-tap-dance";
-                        #binding-cells = <0>;
-                        tapping-term-ms = <300>;
-                        bindings = <&kp ESC>, <&kp ESC>, <&bt BT_CLR>;
+                // Hold A key to clear Bluetooth and enter pairing mode
+                ht_a_bt: hold_tap_a_bt {
+                        compatible = "zmk,behavior-hold-tap";
+                        #binding-cells = <2>;
+                        flavor = "tap-preferred";
+                        tapping-term-ms = <500>;
+                        bindings = <&bt>, <&kp>;
                 };
         };
 
@@ -25,8 +26,8 @@
                 compatible = "zmk,keymap";
                 layer_0 {
                         bindings = <
-   &td_esc_bt &kp Q &kp W &kp E &kp R &kp T &kp RBKT &kp Y &kp U &kp I &kp O &kp P
-   &mo 1 &kp A &kp S &kp D &kp F &kp G &kp RCTRL &kp H &kp J &kp K &kp L &kp SEMI
+   &kp ESC &kp Q &kp W &kp E &kp R &kp T &kp RBKT &kp Y &kp U &kp I &kp O &kp P
+   &mo 1 &ht_a_bt BT_CLR A &kp S &kp D &kp F &kp G &kp RCTRL &kp H &kp J &kp K &kp L &kp SEMI
    &kp LGUI &kp Z &kp X &kp C &kp V &kp B &kp N &kp M &kp COMMA &kp DOT &kp FSLH &kp LBKT
                     &kp LCTRL &mo 3 &kp BSPC &kp DEL &kp RET &lt 2 SPACE &mo 3 &kp RCTRL &kp SQT &kp RSHIFT
                         >;

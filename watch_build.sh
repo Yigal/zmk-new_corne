@@ -3,7 +3,7 @@
 LOG_FILE="build_progress.log"
 COMMIT_HASH=$(git rev-parse HEAD)
 
-echo "--- Build Triggered for Commit $COMMIT_HASH ---" > $LOG_FILE
+echo "--- Build Triggered for Commit $COMMIT_HASH ---" >> $LOG_FILE
 
 # Poll for the run ID associated with this commit
 export GH_NO_COLOR=1

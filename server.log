@@ -1,8 +1,7 @@
-Killing existing process 73872
-73886
-74818
-76214
-76431 on port 6040...
+Killing existing process 77368
+78459
+79947
+79949 on port 6040...
 Starting ZMK Configurator on port 6040 (Debug Mode)...
  * Serving Flask app 'app.py'
  * Debug mode: on
@@ -14,14 +13,14 @@ Press CTRL+C to quit
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 114-739-606
-127.0.0.1 - - [12/Jan/2026 14:11:40] "HEAD / HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:52] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:57] "POST /upload HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:57] "GET /static/images/layer_3.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:57] "GET /static/images/layer_1.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:57] "GET /static/images/layer_0.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:57] "GET /static/images/layer_4.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:57] "GET /static/images/layer_5.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:57] "GET /static/images/layer_6.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:57] "GET /static/images/layer_2.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 14:14:57] "GET /static/images/layer_7.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:36] "HEAD / HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:41] "POST /upload HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:41] "GET /static/images/layer_1.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:41] "GET /static/images/layer_2.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:41] "GET /static/images/layer_3.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:41] "GET /static/images/layer_5.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:41] "GET /static/images/layer_4.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:41] "GET /static/images/layer_0.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:41] "GET /static/images/layer_7.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:20:41] "GET /static/images/layer_6.png HTTP/1.1" 200 -

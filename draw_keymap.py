@@ -8,155 +8,82 @@ KEY_H = 60
 GAP = 5
 MARGIN = 10
 
-# Offsets for staggered split layout (Simulated Corne)
-# Left Side
-# Rows 0-2: 6 columns
-# Thumbs: 3 keys
-# Right Side: Mirrored
-
 def get_key_coords(index):
-    # Index 0-41 (42 keys total)
-    # Left Side: 0-20 (21 keys)
-    # Right Side: 21-41 (21 keys)
+    # Index 0-41 (42 keys total) based on ZMK Corne definition:
+    # 0-11: Top Row (L0-L5, R0-R5)
+    # 12-23: Mid Row (L0-L5, R0-R5)
+    # 24-35: Bot Row (L0-L5, R0-R5)
+    # 36-41: Thumbs (L0-L2, R0-R2)
     
     row = 0
     col = 0
-    is_right = False
     
-    if index >= 21:
-        is_right = True
-        idx = index - 21
-    else:
-        idx = index
-
-    # Specific Corne Mapping (Standard 6-col)
-    # Top Row: 0-5
-    # Mid Row: 6-11
-    # Bot Row: 12-17
-    # Thumbs: 18-20
-    
-    x = 0
-    y = 0
-    
-    # Stagger offsets (approximate for visual)
-    row_offsets = [0, 15, 20] # Simple stagger
-    
-    if idx < 6: # Row 0
-        row = 0
-        col = idx
-        x = MARGIN + col * (KEY_W + GAP)
-        y = MARGIN + row * (KEY_H + GAP) + row_offsets[0]
-    elif idx < 12: # Row 1
-        row = 1
-        col = idx - 6
-        x = MARGIN + col * (KEY_W + GAP)
-        y = MARGIN + row * (KEY_H + GAP) + row_offsets[1]
-    elif idx < 18: # Row 2
-        row = 2
-        col = idx - 12
-        x = MARGIN + col * (KEY_W + GAP)
-        y = MARGIN + row * (KEY_H + GAP) + row_offsets[2]
+    if index < 12: # Top Row
+        r = 0
+        c = index
+    elif index < 24: # Mid Row
+        r = 1
+        c = index - 12
+    elif index < 36: # Bot Row
+        r = 2
+        c = index - 24
     else: # Thumbs
-        row = 3
-        col = idx - 18
-        # Thumbs are usually shifted right on left side
-        thumb_offset_x = 3.5 * (KEY_W + GAP) 
-        x = MARGIN + thumb_offset_x + col * (KEY_W + GAP)
-        y = MARGIN + 3 * (KEY_H + GAP) + 10
+        r = 3
+        c = index - 36 # 0-5
+        
+    row_offsets = [0, 15, 20] # Simple stagger y-offsets for rows 0-2 (optional aesthetic)
+    if r == 3: row_offsets.append(0) # Thumb row offset handled manually
 
-    if is_right:
-        # Mirror / Shift to right side
-        # Total width of left side approx 6 keys
-        left_width = 7 * (KEY_W + GAP)
-        gap_between_halves = 50
-        
-        # Mirror column visual? No, usually indices go Left->Right, but physically right side keys go Right->Left in some matrixes. 
-        # But ZMK keymap usually lists Left Top Row -> Right Top Row.
-        # So Index 6 (Left) is "Y" (Right Top Left).
-        # Actually in Corne ZMK default:
-        # L0-L5, R0-R5
-        # L6-L11, R6-R11
-        # ...
-        
-        # Wait, typical parsing is sequential.
-        # Corne 42 keymap usually is:
-        # Tab Q W E R T   Y U I O P Bksp
-        # So indices 0-5 are Left, 6-11 are Right.
-        
-        # Let's adjust logic for STANDARD KEYMAP ORDER
-        # Row 1: 0-11 (0-5 Left, 6-11 Right)
-        # Row 2: 12-23 (12-17 Left, 18-23 Right)
-        # Row 3: 24-35 (24-29 Left, 30-35 Right)
-        # Thumbs: 36-41 (36-38 Left, 39-41 Right)
-        
-        # New Logic based on continuous index 0-41
-        if index < 12: # Top Row
-            r = 0
-            c = index
-        elif index < 24: # Mid Row
-            r = 1
-            c = index - 12
-        elif index < 36: # Bot Row
-            r = 2
-            c = index - 24
-        else: # Thumbs
-            r = 3
-            c = index - 36 # 0-5
+    final_x = 0
+    final_y = 0
+    
+    # Left Half Width approx: 6 keys
+    left_block_w = 6 * (KEY_W + GAP) + 40 # extra space for split
+    
+    if r < 3:
+        if c < 6: # Left Side
+            final_x = MARGIN + c * (KEY_W + GAP)
+            final_y = MARGIN + r * (KEY_H + GAP) + row_offsets[r]
+        else: # Right Side
+            c_right = c - 6
+            final_x = MARGIN + left_block_w + c_right * (KEY_W + GAP)
+            final_y = MARGIN + r * (KEY_H + GAP) + row_offsets[r]
+    else: # Thumbs
+        # Thumbs are usually offset
+        thumb_y = MARGIN + 3 * (KEY_H + GAP) + 10
+        if c < 3: # Left (3 indices)
+            # Positioned under columns 3,4,5 roughly
+            thumb_start_x = MARGIN + 3.5 * (KEY_W + GAP)
+            final_x = thumb_start_x + c * (KEY_W + GAP)
+            final_y = thumb_y
+        else: # Right (3 indices)
+            # Positioned under columns 0,1,2 of right side roughly
+            # Mirroring left: Left thumbs are inner->outer? No ZMK is usually outer->inner?
+            # Actually standard corne: Left Inner is index 38?
+            # Let's assume standard visual order: 
+            # Left Thumbs: 36, 37, 38 (Left to Right)
+            # Right Thumbs: 39, 40, 41 (Left to Right)
             
-        # Determine Left/Right based on Column
-        # Rows 0-2: Cols 0-5 Left, 6-11 Right
-        # Thumbs: 0-2 Left, 3-5 Right
-        
-        final_x = 0
-        final_y = 0
-        
-        if r < 3:
-            if c < 6: # Left Side
-                final_x = MARGIN + c * (KEY_W + GAP)
-                final_y = MARGIN + r * (KEY_H + GAP) + row_offsets[r]
-            else: # Right Side
-                c_right = c - 6
-                left_w = 6 * (KEY_W + GAP) + 40
-                final_x = MARGIN + left_w + c_right * (KEY_W + GAP)
-                final_y = MARGIN + r * (KEY_H + GAP) + row_offsets[r]
-        else: # Thumbs
-            if c < 3: # Left
-                thumb_start = 3.5 * (KEY_W + GAP)
-                final_x = MARGIN + thumb_start + c * (KEY_W + GAP)
-                final_y = MARGIN + 3 * (KEY_H + GAP) + 10
-            else: # Right
-                c_right = c - 3
-                left_w = 6 * (KEY_W + GAP) + 40
-                # Right thumbs usually mirror left thumbs: start closer to center
-                # Left thumbs: 3.5, 4.5, 5.5 (indices relative to key width)
-                # Right thumbs: 0.5, 1.5, 2.5 relative to right start?
-                # Actually ZMK Order: Left Inner -> Outer? No, usually L -> R.
-                # Left Thumbs: Outer, Mid, Inner (Left to Right).
-                # Right Thumbs: Inner, Mid, Outer (Left to Right).
-                
-                # Visual placement:
-                # Left: near column 3,4,5.
-                # Right: near column 0,1,2 of right side (which is col 6,7,8 absolute)
-                thumb_start_right = -0.5 * (KEY_W + GAP) # Shift left slightly
-                final_x = MARGIN + left_w + thumb_start_right + c_right * (KEY_W + GAP)
-                final_y = MARGIN + 3 * (KEY_H + GAP) + 10
-                
-        return final_x, final_y
-
-    return 0,0
+            c_right = c - 3
+            # Right side start
+            thumb_start_x_right = MARGIN + left_block_w - 0.5 * (KEY_W + GAP)
+            final_x = thumb_start_x_right + c_right * (KEY_W + GAP)
+            final_y = thumb_y
+            
+    return final_x, final_y
 
 def clean_label(keycode):
-    # Remove &kp, &mo, etc
     k = keycode.strip()
-    # Handle comments
-    if "/*" in k:
-        k = k.split("/*")[0].strip()
-        
+    
+    # Define replacements for common parts
     replacements = [
-        ("&kp ", ""), ("&mo ", "L"), ("&lt ", "LT"), ("&to ", "TO"),
-        ("&mt ", "MT"), ("&mkp ", "Mouse "), ("&msc ", "Scroll "), ("&mmv ", "Move "),
-        ("LSHIFT", "Shift"), ("RSHIFT", "Shift"), ("LCTRL", "Ctrl"), ("RCTRL", "Ctrl"),
-        ("LALT", "Alt"), ("RALT", "Alt"), ("LGUI", "Gui"), ("RGUI", "Gui"),
+        ("&kp ", ""), 
+        ("&trans", ""), 
+        ("&none", ""), 
+        ("LSHIFT", "Shift"), ("RSHIFT", "Shift"), 
+        ("LCTRL", "Ctrl"), ("RCTRL", "Ctrl"),
+        ("LALT", "Alt"), ("RALT", "Alt"), 
+        ("LGUI", "Gui"), ("RGUI", "Gui"),
         ("BSPC", "Bksp"), ("SPACE", "Spc"), ("RET", "Ent"), ("ESC", "Esc"),
         ("TAB", "Tab"), ("SQT", "'"), ("SEMI", ";"), ("COMMA", ","), ("DOT", "."),
         ("FSLH", "/"), ("BSLH", "\\"), ("LBKT", "["), ("RBKT", "]"),
@@ -164,13 +91,34 @@ def clean_label(keycode):
         ("PG_UP", "PgUp"), ("PG_DN", "PgDn"), ("PSCRN", "PrtSc"),
         ("C_VOL_UP", "Vol+"), ("C_VOL_DN", "Vol-"), ("C_MUTE", "Mute"),
         ("C_PP", "Play"), ("C_NEXT", "Next"), ("C_PREV", "Prev"),
-        ("&trans", ""), ("&none", "X"), ("&bt BT_SEL", "BT"), ("&bt BT_CLR", "BT CLR")
+        ("&mkp LCLK", "Click L"), ("&mkp RCLK", "Click R"), ("&mkp MCLK", "Click M"),
+        ("&msc SCRL_UP", "Scrl ^"), ("&msc SCRL_DOWN", "Scrl v"),
+        ("&mmv MOVE_UP", "Ms ^"), ("&mmv MOVE_DOWN", "Ms v"), 
+        ("&mmv MOVE_LEFT", "Ms <"), ("&mmv MOVE_RIGHT", "Ms >"),
+        ("LC(", "C-"), ("LS(", "S-"), ("LA(", "A-"), ("LG(", "G-"), (")", "")
     ]
     
+    # Logic for Layer Taps and Mod Taps
+    if k.startswith("&lt "):
+        # &lt 1 SPACE
+        parts = k.split()
+        if len(parts) >= 3:
+            layer = parts[1]
+            key = parts[2].replace("&kp", "").strip()
+            # Recursively clean the key part if complex? simpler to just Map
+            for old, new in replacements: key = key.replace(old, new)
+            return f"L{layer}\n{key}"
+            
+    if k.startswith("&mo "):
+        return f"L{k.split()[1]}"
+        
+    if k.startswith("&to "):
+        return f"TO {k.split()[1]}"
+        
     for old, new in replacements:
         k = k.replace(old, new)
         
-    return k
+    return k.strip()
 
 def draw_layers(keymap_file, output_folder):
     if not os.path.exists(output_folder):
@@ -180,34 +128,28 @@ def draw_layers(keymap_file, output_folder):
         content = f.read()
         
     # Extract Layers
-    # Regex look for layer_N { bindings = < ... >; };
     pattern = re.compile(r'(layer_[0-9a-zA-Z_]+)\s*\{\s*bindings\s*=\s*<(.*?)>;', re.DOTALL)
     matches = pattern.findall(content)
     
     generated_files = []
     
-    for layer_name, bindings in matches:
-        # Split bindings into keys
-        # Clean up newlines and extra spaces
-        bindings = bindings.replace('\n', ' ').strip()
-        # Regex to split by space but keep params together? 
-        # ZMK keys usually space separated: &kp A &mo 1
-        # Simple split might work if not using complex macros
-        keys = [x for x in bindings.split(' ') if x.strip()]
+    for layer_name, bindings_raw in matches:
+        # 1. Remove comments
+        bindings_clean = re.sub(r'/\*.*?\*/', '', bindings_raw, flags=re.DOTALL)
         
-        # Remove comments logic inside split?
-        # Better: use regex to find tokens like &[\w\(\)\_]+
-        # But comments like /* ... */ break this.
-        # Let's clean block comments first
-        bindings_clean = re.sub(r'/\*.*?\*/', '', bindings, flags=re.DOTALL)
-        keys = [x for x in bindings_clean.split(' ') if x.strip()]
-        
-        # If 42 keys
-        if len(keys) < 42:
-            # Pad or warn?
-            pass
+        # 2. Split by '&' to separate bindings (since all ZMK bindings start with &)
+        # This approach avoids splitting parameters like "&kp SPACE" into two keys.
+        # " &kp A &mo 1 " -> [" ", "kp A ", "mo 1 "]
+        raw_tokens = bindings_clean.split('&')
+        keys = []
+        for t in raw_tokens:
+            if not t.strip(): continue
+            # Add the '&' back
+            keys.append('&' + t.strip())
             
-        # Draw Layout
+        # 3. Draw
+        if len(keys) == 0: continue
+        
         img_w = 900
         img_h = 350
         img = Image.new('RGB', (img_w, img_h), color=(30, 30, 30))
@@ -216,46 +158,47 @@ def draw_layers(keymap_file, output_folder):
         try:
             font = ImageFont.truetype("Arial.ttf", 16)
         except:
-            font = ImageFont.load_default()
+            # Try specific paths for Mac/Linux if Arial not found default
+            try:
+                font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 16)
+            except:
+                font = ImageFont.load_default()
             
         for i, key in enumerate(keys):
-            if i >= 42: break # Corne limit
+            if i >= 42: break 
             
             x, y = get_key_coords(i)
             label = clean_label(key)
             
-            # Key color
-            key_color = (240, 240, 240)
-            text_color = (0, 0, 0)
+            # Key Style
+            key_color = (250, 250, 250)
+            text_color = (20, 20, 20)
             
-            if "Layer" in layer_name.title():
-                 # Maybe tint based on layer?
-                 pass
-                 
-            # Special logic for trans/none
-            if label == "": # Trans
+            # Highlight modifiers/layers
+            if "L" in label and len(label) < 4 and label[1:].isdigit(): # L1, L2...
+                 key_color = (200, 200, 255)
+            elif "TO" in label:
+                 key_color = (255, 200, 200)
+            elif label == "" or label == "trans": # &trans
                  key_color = (60, 60, 60)
-                 text_color = (150, 150, 150)
-                 label = "▽"
-            elif label == "X": # None
-                 key_color = (50, 50, 50)
                  text_color = (100, 100, 100)
+                 label = "▽"
+            elif label == "X" or label == "&none": # &none
+                 key_color = (40, 40, 40)
+                 text_color = (80, 80, 80)
+                 label = ""
+                 
+            # shape
+            rect = [x, y, x + KEY_W, y + KEY_H]
+            d.rectangle(rect, fill=key_color, outline=(100, 100, 100))
             
-            # Draw Key Rect
-            shape = [(x, y), (x + KEY_W, y + KEY_H)]
-            d.rectangle(shape, fill=key_color, outline=(100, 100, 100))
-            
-            # Draw Label
-            # Center text
+            # text
             bbox = d.textbbox((0,0), label, font=font)
             text_w = bbox[2] - bbox[0]
             text_h = bbox[3] - bbox[1]
+            d.text((x + (KEY_W - text_w)/2, y + (KEY_H - text_h)/2), label, fill=text_color, font=font)
             
-            text_x = x + (KEY_W - text_w) / 2
-            text_y = y + (KEY_H - text_h) / 2
-            d.text((text_x, text_y), label, fill=text_color, font=font)
-            
-        # Draw Layer Name
+        # Draw Layer Title
         d.text((10, 10), layer_name.upper().replace('_', ' '), fill=(255, 255, 255), font=font)
         
         filename = f"{layer_name}.png"
@@ -266,5 +209,4 @@ def draw_layers(keymap_file, output_folder):
     return generated_files
 
 if __name__ == "__main__":
-    # Test
     draw_layers("config/corne.keymap", "static/images")

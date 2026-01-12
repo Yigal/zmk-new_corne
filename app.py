@@ -250,22 +250,35 @@ build_start_time = None
 @app.route('/git_push', methods=['POST'])
 def git_push():
     global build_start_time
+    build_start_time = time.time()
+    
+    # Initialize Log
+    with open(BUILD_LOG_FILE, 'w') as f:
+        f.write("--- Starting Build Process ---\n")
+
+    def log_cmd(args):
+        with open(BUILD_LOG_FILE, 'a') as f:
+            f.write(f"\n> {' '.join(args)}\n")
+        subprocess.run(args, stdout=open(BUILD_LOG_FILE, 'a'), stderr=subprocess.STDOUT, check=False)
+
     try:
-        subprocess.run(["git", "add", "."], check=True)
-        # Allow empty commits if nothing changed
-        subprocess.run(["git", "commit", "--allow-empty", "-m", "Update keymap via Web UI"], check=True)
-        subprocess.run(["git", "push"], check=True)
-        flash('Defined changes pushed to GitHub!')
+        log_cmd(["git", "add", "."])
+        log_cmd(["git", "commit", "--allow-empty", "-m", "Update keymap via Web UI"])
+        # Check if push succeeds
+        with open(BUILD_LOG_FILE, 'a') as f:
+            f.write("\n> git push\n")
+        subprocess.run(["git", "push"], stdout=open(BUILD_LOG_FILE, 'a'), stderr=subprocess.STDOUT, check=True)
         
-        # Start build and log to file
-        build_start_time = time.time()
+        flash('Git push successful. Watch logs for cloud build status.')
         
-        # Execute the robust watch script in background
+        # Start Watcher (it will append to the same log)
         subprocess.Popen(["nohup", "./watch_build.sh", "&"], shell=False)
         
-        flash('GitHub Build triggered! See logs below.')
     except Exception as e:
+        with open(BUILD_LOG_FILE, 'a') as f:
+            f.write(f"\nCRITICAL ERROR: {str(e)}\n")
         flash(f'Git Error: {str(e)}')
+        
     return redirect('/')
 
 @app.route('/build_status')

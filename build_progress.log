@@ -1,11 +1,3 @@
-run ID required when not running interactively
+--- Starting Build Process ---
 
-Usage:  gh run watch <run-id> [flags]
-
-Flags:
-      --compact        Show only relevant/failed steps
-      --exit-status    Exit with non-zero status if run fails
-  -i, --interval int   Refresh interval in seconds (default 3)
-  
-error downloading firmware: error extracting zip archive: error extracting "corne_left.uf2": open /Users/yigalweinberger/Documents/Code/home_code/Keyboard/zmk-new_corne/firmware_latest/corne_left.uf2: file exists
---- Build Complete ---
+> git add .

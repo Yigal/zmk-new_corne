@@ -12,8 +12,25 @@ RUN_ID=""
 echo "Waiting for GitHub Actions to start..." >> $LOG_FILE
 
 for i in {1..20}; do
-    RUN_ID=$(gh run list -c $COMMIT_HASH --limit 1 --json databaseId --jq '.[0].databaseId')
+    RUN_DETAILS=$(gh run list -c $COMMIT_HASH --limit 1 --json databaseId,url,displayTitle,workflowName --jq '.[0]')
+    RUN_ID=$(echo $RUN_DETAILS | jq -r '.databaseId')
+    
     if [ -n "$RUN_ID" ] && [ "$RUN_ID" != "null" ]; then
+        RUN_URL=$(echo $RUN_DETAILS | jq -r '.url')
+        RUN_TITLE=$(echo $RUN_DETAILS | jq -r '.displayTitle')
+        WORKFLOW=$(echo $RUN_DETAILS | jq -r '.workflowName')
+        RUN_NUMBER=$(gh run view $RUN_ID --json number --jq '.number')
+        
+        echo "" >> $LOG_FILE
+        echo "Found Run ID: $RUN_ID (Build #$RUN_NUMBER)" >> $LOG_FILE
+        echo "Workflow: $WORKFLOW" >> $LOG_FILE
+        echo "Action: $RUN_TITLE" >> $LOG_FILE
+        echo "URL: $RUN_URL" >> $LOG_FILE
+        
+        # Open in browser automatically (MacOS)
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            open $RUN_URL
+        fi
         break
     fi
     echo -n "." >> $LOG_FILE
@@ -27,11 +44,28 @@ if [ -z "$RUN_ID" ] || [ "$RUN_ID" == "null" ]; then
     exit 1
 fi
 
-echo "Found Run ID: $RUN_ID" >> $LOG_FILE
 echo "Streaming logs..." >> $LOG_FILE
+echo "Command: gh run watch $RUN_ID" >> $LOG_FILE
+
+# Start background monitor for status checks (every 10s)
+(
+    while kill -0 $$ 2>/dev/null; do
+        sleep 10
+        # Check if parent script is still running
+        if ! kill -0 $$ 2>/dev/null; then break; fi
+        
+        # Fetch simple status
+        STATUS_LINE=$(gh run view $RUN_ID --json status,conclusion --jq '"[Status: " + .status + " / Result: " + (.conclusion // "Running") + "]"')
+        echo "[$(date +%H:%M:%S)] Check -> $STATUS_LINE" >> $LOG_FILE
+    done
+) &
+MONITOR_PID=$!
 
 # Watch the run and append to log
 gh run watch $RUN_ID >> $LOG_FILE 2>&1
+
+# Kill monitor
+kill $MONITOR_PID 2>/dev/null
 
 echo "--- Build Complete ---" >> $LOG_FILE
 

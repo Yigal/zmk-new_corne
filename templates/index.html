@@ -87,7 +87,7 @@
             margin-top: 1rem;
         }
 
-        #log-container {
+        #build-log-container {
             background: #1e1e1e;
             color: #e5e5e5;
             padding: 1rem;
@@ -191,22 +191,22 @@
         <p>Push changes to GitHub to trigger a cloud build. This takes ~3 minutes.</p>
         <button id="build-btn" class="btn btn-purple" onclick="triggerBuild()">Push & Trigger Build</button>
 
-        <div id="log-container" class="hidden">Waiting for logs...</div>
+        <div id="build-log-container" class="hidden">Waiting for logs...</div>
     </div>
 
     <script>
         let pollInterval;
 
         async function triggerBuild() {
-             const btn = document.getElementById('build-btn');
-             const logBox = document.getElementById('log-container');
-             
-             btn.disabled = true;
-             btn.innerText = "Starting...";
-             logBox.classList.remove('hidden');
-             logBox.innerText = "Initiating build process and syncing with GitHub...\n";
-             
-             try {
+            const btn = document.getElementById('build-btn');
+            const logBox = document.getElementById('build-log-container');
+
+            btn.disabled = true;
+            btn.innerText = "Starting...";
+            logBox.classList.remove('hidden');
+            logBox.innerText = "Initiating build process and syncing with GitHub...\n";
+
+            try {
                 const res = await fetch('/git_push', { method: 'POST' });
                 const data = await res.json();
                 if (data.status === 'success') {
@@ -215,10 +215,10 @@
                     logBox.innerText += "\nError: " + data.message;
                     btn.disabled = false;
                 }
-             } catch(e) {
-                 logBox.innerText += "\nNetwork Error: " + e;
-                 btn.disabled = false;
-             }
+            } catch (e) {
+                logBox.innerText += "\nNetwork Error: " + e;
+                btn.disabled = false;
+            }
         }
 
         function startPolling() {
@@ -233,9 +233,9 @@
                 const res = await fetch('/build_status');
                 const data = await res.json();
 
-                const logBox = document.getElementById('log-container');
+                const logBox = document.getElementById('build-log-container');
                 if (data.logs) {
-                     logBox.innerText = data.logs;
+                    logBox.innerText = data.logs;
                 }
                 logBox.scrollTop = logBox.scrollHeight;
 

@@ -4,6 +4,7 @@ import json
 import re
 import subprocess
 import shutil
+from draw_keymap import draw_layers
 
 app = Flask(__name__)
 app.secret_key = 'zmk_secret_key'
@@ -220,13 +221,17 @@ def convert_layout():
 
     conversion_stats = None
     keymap_content = None
+    layer_images = []
 
     try:
         layer_count = convert_vil_to_keymap(filepath)
         filename = os.path.basename(filepath)
         flash(f'Successfully converted {filename}!')
         
-        conversion_stats = f"Source: {filename}\nLayers Found: {layer_count}\nOutput Target: {KEYMAP_FILE}"
+        # Generate Images
+        layer_images = draw_layers(KEYMAP_FILE, 'static/images')
+        
+        conversion_stats = f"Source: {filename}\nLayers Found: {layer_count}\nOutput Target: {KEYMAP_FILE}\nImages Generated: {len(layer_images)}"
         
         if os.path.exists(KEYMAP_FILE):
              with open(KEYMAP_FILE, 'r') as f:
@@ -235,7 +240,7 @@ def convert_layout():
     except Exception as e:
         flash(f'Error converting file: {str(e)}')
         
-    return render_template('index.html', templates=templates, conversion_stats=conversion_stats, keymap_content=keymap_content)
+    return render_template('index.html', templates=templates, conversion_stats=conversion_stats, keymap_content=keymap_content, layer_images=layer_images)
 
 import time
 
@@ -254,16 +259,9 @@ def git_push():
         
         # Start build and log to file
         build_start_time = time.time()
-        with open(BUILD_LOG_FILE, 'w') as f:
-            f.write("--- Build Triggered ---\n")
-            
-        # We assume the push triggers a 'push' event workflow. 
-        # We need to find the run ID to watch it. 'gh run watch' watches the latest run.
-        # Adding a small sleep to ensure GitHub processes the webhook before we ask to watch.
-        cmd = f"sleep 10; gh run watch; gh run download -n firmware -D firmware_latest; echo '--- Build Complete ---'"
         
-        # Run in background, piping output to log file
-        subprocess.Popen(f"nohup sh -c \"{cmd}\" > {BUILD_LOG_FILE} 2>&1 &", shell=True)
+        # Execute the robust watch script in background
+        subprocess.Popen(["nohup", "./watch_build.sh", "&"], shell=False)
         
         flash('GitHub Build triggered! See logs below.')
     except Exception as e:

@@ -155,6 +155,22 @@
             <h3 style="margin-top: 0; font-size: 1.1rem; color: #27272a;">Conversion Report</h3>
             <pre style="margin: 0; color: #52525b; font-size: 0.9rem;">{{ conversion_stats }}</pre>
 
+            {% if layer_images %}
+            <div style="margin-top: 1rem;">
+                <h4 style="margin: 0.5rem 0; color: #3f3f46;">Generated Layout Previews</h4>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for img in layer_images %}
+                    <div style="border: 1px solid #ddd; padding: 0.5rem; background: white; border-radius: 6px;">
+                        <div style="font-weight: bold; margin-bottom: 0.25rem;">{{ img.replace('.png', '').replace('_',
+                            ' ').upper() }}</div>
+                        <img src="{{ url_for('static', filename='images/' + img) }}"
+                            style="max-width: 100%; height: auto; display: block;" alt="{{ img }}">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
             {% if keymap_content %}
             <details style="margin-top: 1rem;">
                 <summary style="cursor: pointer; color: #2563eb; font-weight: 500;">View Generated Keymap File</summary>

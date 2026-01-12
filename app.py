@@ -186,6 +186,8 @@ def convert_vil_to_keymap(filepath):
     output += "        };\n};\n"
     with open(KEYMAP_FILE, "w") as f:
         f.write(output)
+    
+    return len(layers)
 
 @app.route('/')
 def index():
@@ -196,6 +198,11 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def convert_layout():
+    # Re-fetch templates for the re-render
+    templates = []
+    if os.path.exists(UPLOAD_FOLDER):
+        templates = [f for f in os.listdir(UPLOAD_FOLDER) if f.endswith('.vil')]
+
     uploaded_file = request.files.get('vil_file')
     selected_file = request.form.get('existing_file')
     
@@ -211,29 +218,70 @@ def convert_layout():
         flash('No valid file provided')
         return redirect('/')
 
+    conversion_stats = None
+    keymap_content = None
+
     try:
-        convert_vil_to_keymap(filepath)
-        flash(f'Successfully converted {os.path.basename(filepath)} to Keymap!')
+        layer_count = convert_vil_to_keymap(filepath)
+        filename = os.path.basename(filepath)
+        flash(f'Successfully converted {filename}!')
+        
+        conversion_stats = f"Source: {filename}\nLayers Found: {layer_count}\nOutput Target: {KEYMAP_FILE}"
+        
+        if os.path.exists(KEYMAP_FILE):
+             with open(KEYMAP_FILE, 'r') as f:
+                 keymap_content = f.read()
+                 
     except Exception as e:
         flash(f'Error converting file: {str(e)}')
-    return redirect('/')
+        
+    return render_template('index.html', templates=templates, conversion_stats=conversion_stats, keymap_content=keymap_content)
+
+import time
+
+BUILD_LOG_FILE = 'build_progress.log'
+build_start_time = None
 
 @app.route('/git_push', methods=['POST'])
 def git_push():
+    global build_start_time
     try:
         subprocess.run(["git", "add", "."], check=True)
-        subprocess.run(["git", "commit", "-m", "Update keymap via Web UI"], check=True)
+        # Allow empty commits if nothing changed
+        subprocess.run(["git", "commit", "--allow-empty", "-m", "Update keymap via Web UI"], check=True)
         subprocess.run(["git", "push"], check=True)
         flash('Defined changes pushed to GitHub!')
         
-        # Watch and Download logic (simple blocking for demo, ideal would be async)
-        # We will just trigger it and let user assume it works or use CLI for status
-        subprocess.Popen(["nohup", "sh", "-c", "sleep 5; gh run watch; gh run download -n firmware -D firmware_latest"], 
-                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        flash('GitHub Build triggered! Wait ~3 mins then refresh/flash.')
+        # Start build and log to file
+        build_start_time = time.time()
+        with open(BUILD_LOG_FILE, 'w') as f:
+            f.write("--- Build Triggered ---\n")
+            
+        # We assume the push triggers a 'push' event workflow. 
+        # We need to find the run ID to watch it. 'gh run watch' watches the latest run.
+        # Adding a small sleep to ensure GitHub processes the webhook before we ask to watch.
+        cmd = f"sleep 10; gh run watch; gh run download -n firmware -D firmware_latest; echo '--- Build Complete ---'"
+        
+        # Run in background, piping output to log file
+        subprocess.Popen(f"nohup sh -c \"{cmd}\" > {BUILD_LOG_FILE} 2>&1 &", shell=True)
+        
+        flash('GitHub Build triggered! See logs below.')
     except Exception as e:
         flash(f'Git Error: {str(e)}')
     return redirect('/')
+
+@app.route('/build_status')
+def build_status():
+    logs = ""
+    duration = 0
+    if os.path.exists(BUILD_LOG_FILE):
+        with open(BUILD_LOG_FILE, 'r') as f:
+            logs = f.read()
+    
+    if build_start_time:
+        duration = int(time.time() - build_start_time)
+        
+    return {"logs": logs, "duration": duration}
 
 @app.route('/flash/left', methods=['POST'])
 def flash_left():

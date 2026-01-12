@@ -14,3 +14,7 @@ Press CTRL+C to quit
  * Debugger PIN: 114-739-606
 127.0.0.1 - - [12/Jan/2026 14:04:39] "GET / HTTP/1.1" 200 -
 127.0.0.1 - - [12/Jan/2026 14:04:44] "POST /upload HTTP/1.1" 200 -
+[main a9623cf] Update keymap via Web UI
+ 4 files changed, 5 insertions(+), 9 deletions(-)
+ create mode 100644 firmware_latest/corne_left.uf2
+ create mode 100644 firmware_latest/corne_right.uf2

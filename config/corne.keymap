@@ -11,46 +11,12 @@
 #include <dt-bindings/zmk/pointing.h>
 
 / {
-        macros {
-                // Macro to clear Bluetooth pairing
-                bt_clr_macro: bt_clr_macro {
-                        compatible = "zmk,behavior-macro";
-                        #binding-cells = <0>;
-                        bindings = <&bt BT_CLR>;
-                };
-                // Macro to toggle output (USB/BT)
-                out_tog_macro: out_tog_macro {
-                        compatible = "zmk,behavior-macro";
-                        #binding-cells = <0>;
-                        bindings = <&out OUT_TOG>;
-                };
-        };
-
-        behaviors {
-                // Hold A key to clear Bluetooth and enter pairing mode
-                ht_a_bt: hold_tap_a_bt {
-                        compatible = "zmk,behavior-hold-tap";
-                        #binding-cells = <2>;
-                        flavor = "tap-preferred";
-                        tapping-term-ms = <500>;
-                        bindings = <&bt_clr_macro>, <&kp>;
-                };
-                // Hold S key to toggle output (USB/BT)
-                ht_s_out: hold_tap_s_out {
-                        compatible = "zmk,behavior-hold-tap";
-                        #binding-cells = <2>;
-                        flavor = "tap-preferred";
-                        tapping-term-ms = <500>;
-                        bindings = <&out_tog_macro>, <&kp>;
-                };
-        };
-
         keymap {
                 compatible = "zmk,keymap";
                 layer_0 {
                         bindings = <
    &kp ESC &kp Q &kp W &kp E &kp R &kp T &kp RBKT &kp Y &kp U &kp I &kp O &kp P
-   &mo 1 &ht_a_bt 0 A &ht_s_out 0 S &kp D &kp F &kp G &kp RCTRL &kp H &kp J &kp K &kp L &kp SEMI
+   &mo 1 &kp A &kp S &kp D &kp F &kp G &kp RCTRL &kp H &kp J &kp K &kp L &kp SEMI
    &kp LGUI &kp Z &kp X &kp C &kp V &kp B &kp N &kp M &kp COMMA &kp DOT &kp FSLH &kp LBKT
                     &kp LCTRL &mo 3 &kp BSPC &kp DEL &kp RET &lt 2 SPACE &mo 3 &kp RCTRL &kp SQT &kp RSHIFT
                         >;

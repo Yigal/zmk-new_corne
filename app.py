@@ -12,8 +12,10 @@ app.secret_key = 'zmk_secret_key'
 UPLOAD_FOLDER = 'vail_templates'
 KEYMAP_FILE = 'config/corne.keymap'
 FIRMWARE_DIR = 'firmware_latest'
+BUILDS_DIR = 'builds'
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(BUILDS_DIR, exist_ok=True)
 
 # Mapping QMK/VIAL keycodes to ZMK
 KEY_MAP = {
@@ -194,30 +196,55 @@ def convert_vil_to_keymap(filepath):
 def index():
     templates = []
     if os.path.exists(UPLOAD_FOLDER):
-        templates = [f for f in os.listdir(UPLOAD_FOLDER) if f.endswith('.vil')]
-    return render_template('index.html', templates=templates)
+        templates = sorted([f for f in os.listdir(UPLOAD_FOLDER) if f.endswith('.vil')])
+    
+    # Get available builds
+    builds = []
+    if os.path.exists(BUILDS_DIR):
+        for build_name in sorted(os.listdir(BUILDS_DIR), reverse=True):  # Newest first
+            build_path = os.path.join(BUILDS_DIR, build_name)
+            if os.path.isdir(build_path):
+                info_file = os.path.join(build_path, 'build_info.json')
+                if os.path.exists(info_file):
+                    try:
+                        with open(info_file) as f:
+                            info = json.load(f)
+                            builds.append({
+                                'name': build_name,
+                                'run_number': info.get('run_number', '?'),
+                                'title': info.get('title', build_name),
+                                'timestamp': info.get('timestamp', '')
+                            })
+                    except:
+                        builds.append({'name': build_name, 'run_number': '?', 'title': build_name, 'timestamp': ''})
+                else:
+                    builds.append({'name': build_name, 'run_number': '?', 'title': build_name, 'timestamp': ''})
+    
+    return render_template('index.html', templates=templates, builds=builds)
 
 @app.route('/upload', methods=['POST'])
 def convert_layout():
-    # Re-fetch templates for the re-render
-    templates = []
-    if os.path.exists(UPLOAD_FOLDER):
-        templates = [f for f in os.listdir(UPLOAD_FOLDER) if f.endswith('.vil')]
-
     uploaded_file = request.files.get('vil_file')
     selected_file = request.form.get('existing_file')
     
     filepath = None
     
+    # Handle file upload first (save to templates folder)
     if uploaded_file and uploaded_file.filename != '':
         filepath = os.path.join(UPLOAD_FOLDER, uploaded_file.filename)
         uploaded_file.save(filepath)
+        flash(f'File "{uploaded_file.filename}" saved to templates!')
     elif selected_file:
         filepath = os.path.join(UPLOAD_FOLDER, selected_file)
     
+    # Re-fetch templates AFTER saving (so new upload appears in list)
+    templates = []
+    if os.path.exists(UPLOAD_FOLDER):
+        templates = sorted([f for f in os.listdir(UPLOAD_FOLDER) if f.endswith('.vil')])
+    
     if not filepath or not os.path.exists(filepath):
         flash('No valid file provided')
-        return redirect('/')
+        return render_template('index.html', templates=templates)
 
     conversion_stats = None
     keymap_content = None
@@ -303,20 +330,40 @@ def check_mount():
 @app.route('/flash/<side>', methods=['POST'])
 def flash_firmware(side):
     if side not in ['left', 'right']:
-        return "Invalid side", 400
+        return {"status": "error", "message": "Invalid side"}, 400
+    
+    # Get selected build from request
+    data = request.get_json() or {}
+    build_name = data.get('build', 'firmware_latest')
+    
+    # Determine firmware path
+    if build_name == 'firmware_latest' or not build_name:
+        firmware_dir = FIRMWARE_DIR
+    else:
+        firmware_dir = os.path.join(BUILDS_DIR, build_name)
+    
+    if not os.path.exists(firmware_dir):
+        return {"status": "error", "message": f"Build folder not found: {firmware_dir}"}, 404
+    
+    # Find the correct UF2 file
+    uf2_file = f"corne_{side}.uf2"
+    uf2_path = os.path.join(firmware_dir, uf2_file)
+    
+    if not os.path.exists(uf2_path):
+        return {"status": "error", "message": f"Firmware file not found: {uf2_file}"}, 404
         
-    script = f"flash_{side}.py"
+    # Verify mount
+    mount_point = "/Volumes/NICENANO"
+    if not os.path.exists(mount_point):
+        return {"status": "error", "message": "Device not found! Did it disconnect?"}, 404
+    
     try:
-        # Verify mount again just in case
-        if not os.path.exists("/Volumes/NICENANO"):
-             return {"status": "error", "message": "Device not found! Did it disconnect?"}, 404
-             
-        subprocess.run(["python3", script], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        return {"status": "success", "message": f"{side.capitalize()} side flashed successfully!"}
-    except subprocess.CalledProcessError as e:
-        return {"status": "error", "message": f"Script Error: {str(e)}"}, 500
+        # Copy firmware directly
+        dest_path = os.path.join(mount_point, uf2_file)
+        shutil.copy(uf2_path, dest_path)
+        return {"status": "success", "message": f"{side.capitalize()} side flashed with {build_name}!"}
     except Exception as e:
-        return {"status": "error", "message": f"Server Error: {str(e)}"}, 500
+        return {"status": "error", "message": f"Flash Error: {str(e)}"}, 500
 
 if __name__ == '__main__':
     try:

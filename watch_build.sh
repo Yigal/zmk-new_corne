@@ -72,9 +72,23 @@ echo "--- Build Complete ---" >> $LOG_FILE
 # Download firmware if successful
 if [ $? -eq 0 ]; then
     echo "Downloading firmware..." >> $LOG_FILE
+    
+    # Create unique build folder: builds/YYYYMMDD_HHMMSS_RunID
+    BUILD_NAME="$(date +%Y%m%d_%H%M%S)_build${RUN_NUMBER}"
+    BUILD_DIR="builds/$BUILD_NAME"
+    mkdir -p "$BUILD_DIR"
+    
+    gh run download $RUN_ID -n firmware -D "$BUILD_DIR" >> $LOG_FILE 2>&1
+    
+    # Also update firmware_latest as a symlink/copy for convenience
     rm -rf firmware_latest
-    gh run download $RUN_ID -n firmware -D firmware_latest >> $LOG_FILE 2>&1
-    echo "Firmware downloaded to firmware_latest/" >> $LOG_FILE
+    cp -r "$BUILD_DIR" firmware_latest
+    
+    echo "Firmware saved to: $BUILD_DIR" >> $LOG_FILE
+    echo "Also copied to: firmware_latest/" >> $LOG_FILE
+    
+    # Save build metadata
+    echo "{\"run_id\": $RUN_ID, \"run_number\": $RUN_NUMBER, \"title\": \"$RUN_TITLE\", \"timestamp\": \"$(date -Iseconds)\"}" > "$BUILD_DIR/build_info.json"
 else
     echo "Build Failed." >> $LOG_FILE
 fi

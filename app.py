@@ -269,17 +269,15 @@ def git_push():
             f.write("\n> git push\n")
         subprocess.run(["git", "push"], stdout=open(BUILD_LOG_FILE, 'a'), stderr=subprocess.STDOUT, check=True)
         
-        flash('Git push successful. Watch logs for cloud build status.')
-        
         # Start Watcher (it will append to the same log)
         subprocess.Popen(["nohup", "./watch_build.sh", "&"], shell=False)
+        
+        return {"status": "success", "message": "Build triggered successfully"}
         
     except Exception as e:
         with open(BUILD_LOG_FILE, 'a') as f:
             f.write(f"\nCRITICAL ERROR: {str(e)}\n")
-        flash(f'Git Error: {str(e)}')
-        
-    return redirect('/')
+        return {"status": "error", "message": str(e)}, 500
 
 @app.route('/build_status')
 def build_status():

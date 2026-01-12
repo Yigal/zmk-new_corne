@@ -189,9 +189,7 @@
             <span id="timer" class="hidden">00:00</span>
         </h2>
         <p>Push changes to GitHub to trigger a cloud build. This takes ~3 minutes.</p>
-        <form action="/git_push" method="post" onsubmit="startBuildTracking()">
-            <button type="submit" class="btn btn-purple">Push & Trigger Build</button>
-        </form>
+        <button id="build-btn" class="btn btn-purple" onclick="triggerBuild()">Push & Trigger Build</button>
 
         <div id="log-container" class="hidden">Waiting for logs...</div>
     </div>
@@ -199,15 +197,35 @@
     <script>
         let pollInterval;
 
-        function startBuildTracking() {
-            document.getElementById('log-container').classList.remove('hidden');
-            document.getElementById('timer').classList.remove('hidden');
-            document.getElementById('timer').innerText = "Starting...";
+        async function triggerBuild() {
+             const btn = document.getElementById('build-btn');
+             const logBox = document.getElementById('log-container');
+             
+             btn.disabled = true;
+             btn.innerText = "Starting...";
+             logBox.classList.remove('hidden');
+             logBox.innerText = "Initiating build process and syncing with GitHub...\n";
+             
+             try {
+                const res = await fetch('/git_push', { method: 'POST' });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    startPolling();
+                } else {
+                    logBox.innerText += "\nError: " + data.message;
+                    btn.disabled = false;
+                }
+             } catch(e) {
+                 logBox.innerText += "\nNetwork Error: " + e;
+                 btn.disabled = false;
+             }
+        }
 
-            // Wait a sec for server to process the POST then start polling
-            setTimeout(() => {
-                pollInterval = setInterval(fetchLogs, 2000);
-            }, 1000);
+        function startPolling() {
+            document.getElementById('timer').classList.remove('hidden');
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = setInterval(fetchLogs, 2000);
+            fetchLogs();
         }
 
         async function fetchLogs() {
@@ -216,8 +234,10 @@
                 const data = await res.json();
 
                 const logBox = document.getElementById('log-container');
-                logBox.innerText = data.logs || "Waiting for build start...";
-                logBox.scrollTop = logBox.scrollHeight; // Auto-scroll
+                if (data.logs) {
+                     logBox.innerText = data.logs;
+                }
+                logBox.scrollTop = logBox.scrollHeight;
 
                 if (data.duration > 0) {
                     const mins = Math.floor(data.duration / 60);
@@ -225,9 +245,11 @@
                     document.getElementById('timer').innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
                 }
 
-                if (data.logs.includes("Build Complete")) {
+                if (data.logs && data.logs.includes("Build Complete")) {
                     clearInterval(pollInterval);
                     document.getElementById('timer').innerText += " (Done!)";
+                    document.getElementById('build-btn').innerText = "Push & Trigger Build";
+                    document.getElementById('build-btn').disabled = false;
                 }
             } catch (e) {
                 console.error("Poll error", e);

@@ -3,3 +3,8 @@
         break;
     fi; STATUS_LINE=$(gh run view $RUN_ID --json status,conclusion --jq '"[Status: " + .status + " / Result: " + (.conclusion // "Running") + "]"'); echo "[$(date +%H:%M:%S)] Check -> $STATUS_LINE" >> $LOG_FILE;
 done )
+./watch_build.sh: line 96: 51146 Terminated: 15          ( while kill -0 $$ 2> /dev/null; do
+    sleep 10; if ! kill -0 $$ 2> /dev/null; then
+        break;
+    fi; STATUS_LINE=$(gh run view $RUN_ID --json status,conclusion --jq '"[Status: " + .status + " / Result: " + (.conclusion // "Running") + "]"'); echo "[$(date +%H:%M:%S)] Check -> $STATUS_LINE" >> $LOG_FILE;
+done )

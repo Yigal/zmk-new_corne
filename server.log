@@ -15,19 +15,92 @@ Press CTRL+C to quit
 127.0.0.1 - - [12/Jan/2026 15:51:02] "POST /upload HTTP/1.1" 200 -
 127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_3.png HTTP/1.1" 200 -
 127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_1.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_2.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_4.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_0.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_5.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_6.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_7.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:10] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:16] "POST /upload HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_0.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_1.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_2.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_4.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_3.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_5.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_6.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_7.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/./start.sh: line 21: 70038 Killed: 9               python3 app.py
+./start.sh: line 22: syntax error near unexpected token `('
+./start.sh: line 22: ` on port $PORT (Debug Mode)..."'
+/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+:51:16] "GET /static/images/layer_2.png HTTP/1.1" 200 -
+127.0.0.1 Usage: open [-e] [-t] [-f] [-W] [-R] [-n] [-g] [-h] [-s <partial SDK name>][-b <bundle identifier>] [-a <application>] [-u URL] [filenames] [--args arguments]
+Help: Open opens files from a shell.
+      By default, opens each file using the default application for that file.  
+      If the file is in the form of a URL, the file will be opened as a URL.
+Options: 
+      -a                    Opens with the specified application.
+      --arch ARCH           Open with the given cpu architecture type and subtype.
+      -b                    Opens with the specified application bundle identifier.
+      -e                    Opens with TextEdit.
+      -t                    Opens with default text editor.
+      -f                    Reads input from standard input and opens with TextEdit.
+      -F  --fresh           Launches the app fresh, that is, without restoring windows. Saved persistent state is lost, excluding Untitled documents.
+      -R, --reveal          Selects in the Finder instead of opening.
+      -W, --wait-apps       Blocks until the used applications are closed (even if they were already running).
+          --args            All remaining arguments are passed in argv to the application's main() function instead of opened.
+      -n, --new             Open a new instance of the application even if one is already running.
+      -j, --hide            Launches the app hidden.
+      -g, --background      Does not bring the application to the foreground.
+      -h, --header          Searches header file locations for headers matching the given filenames, and opens them.
+      -s                    For -h, the SDK to use; if supplied, only SDKs whose names contain the argument value are searched.
+                            Otherwise the highest versioned SDK in each platform is used.
+      -u, --url URL         Open this URL, even if it matches exactly a filepath
+      -i, --stdin  PATH     Launches the application with stdin connected to PATH; defaults to /dev/null
+      -o, --stdout PATH     Launches the application with /dev/stdout connected to PATH; 
+          --stderr PATH     Launches the application with /dev/stderr connected to PATH to
+          --env    VAR      Add an enviroment variable to the launched process, where VAR is formatted AAA=foo or just AAA for a null string value.
+./watch_build.sh: line 42: break: only meaningful in a `for', `while', or `until' loop
+./watch_build.sh: line 43: syntax error near unexpected token `fi'
+./watch_build.sh: line 43: `    fi'
+h platform is used.
+      -u, --url URL         Open this URL, even if it matches exactly a filepath
+      -i, --stdin  PATH     Launches the application with stdin connected to PATH; defaults to /dev/null
+      -o, --stdout PATH     Launches the application with /dev/stdout connected to PATH; 
+          --stderr PATH     Launches the application with /dev/stderr connected to PATH to
+          --env    VAR      Add an enviroment variable to the launched process, where VAR is formatted AAA=foo or just AAA for a null string value.
+./watch_build.sh: line 42: break: only meaningful in a `for', `while', or `until' loop
+./watch_build.sh: line 43: syntax error near unexpected token `fi'
+./watch_build.sh: line 43: `    fi'
+26 15:53:03] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:05] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:07] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:09] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:11] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:13] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:15] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:17] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:19] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:21] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:23] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:25] "GET /build_status HTTP/1.1" 200 -
+./watch_build.sh: line 96:  9972 Terminated: 15          ( while kill -0 $$ 2> /dev/null; do
+    sleep 10; if ! kill -0 $$ 2> /dev/null; then
+        break;
+    fi; STATUS_LINE=$(gh run view $RUN_ID --json status,conclusion --jq '"[Status: " + .status + " / Result: " + (.conclusion // "Running") + "]"'); echo "[$(date +%H:%M:%S)] Check -> $STATUS_LINE" >> $LOG_FILE;
+done )
+127.0.0.1 - - [12/Jan/2026 15:53:27] "GET /build_status HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:53:27] "GET /list_builds HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:55:09] "GET /list_builds HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:55:14] "GET /check_mount HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:55:19] "GET /check_mount HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:55:24] "GET /check_mount HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:55:29] "GET /check_mount HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:55:34] "GET /check_mount HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:55:41] "POST /flash/left HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:55:54] "GET /list_builds HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:55:55] "GET /list_builds HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:56:06] "GET /check_mount HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:56:11] "GET /check_mount HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:56:17] "POST /flash/left HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:56:29] "GET /check_mount HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:56:34] "GET /check_mount HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:56:37] "POST /flash/right HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 18:13:15] "POST /upload HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 18:13:15] "GET /static/images/layer_0.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 18:13:15] "GET /static/images/layer_1.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 18:13:15] "GET /static/images/layer_2.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 18:13:15] "GET /static/images/layer_4.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 18:13:15] "GET /static/images/layer_5.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 18:13:15] "GET /static/images/layer_3.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 18:13:15] "GET /static/images/layer_6.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 18:13:15] "GET /static/images/layer_7.png HTTP/1.1" 200 -

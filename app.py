@@ -292,23 +292,31 @@ def build_status():
         
     return {"logs": logs, "duration": duration}
 
-@app.route('/flash/left', methods=['POST'])
-def flash_left():
-    try:
-        subprocess.run(["python3", "flash_left.py"], check=True)
-        flash('Left side flashed successfully (if connected).')
-    except Exception as e:
-        flash(f'Flash Error: {str(e)}')
-    return redirect('/')
+@app.route('/check_mount')
+def check_mount():
+    # Common mount point for Nice!Nano bootloader on macOS
+    mount_point = "/Volumes/NICENANO"
+    if os.path.exists(mount_point):
+        return {"mounted": True, "path": mount_point}
+    return {"mounted": False}
 
-@app.route('/flash/right', methods=['POST'])
-def flash_right():
+@app.route('/flash/<side>', methods=['POST'])
+def flash_firmware(side):
+    if side not in ['left', 'right']:
+        return "Invalid side", 400
+        
+    script = f"flash_{side}.py"
     try:
-        subprocess.run(["python3", "flash_right.py"], check=True)
-        flash('Right side flashed successfully (if connected).')
+        # Verify mount again just in case
+        if not os.path.exists("/Volumes/NICENANO"):
+             return {"status": "error", "message": "Device not found! Did it disconnect?"}, 404
+             
+        subprocess.run(["python3", script], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return {"status": "success", "message": f"{side.capitalize()} side flashed successfully!"}
+    except subprocess.CalledProcessError as e:
+        return {"status": "error", "message": f"Script Error: {str(e)}"}, 500
     except Exception as e:
-        flash(f'Flash Error: {str(e)}')
-    return redirect('/')
+        return {"status": "error", "message": f"Server Error: {str(e)}"}, 500
 
 if __name__ == '__main__':
     try:

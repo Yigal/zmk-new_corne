@@ -1,5 +1,6 @@
-Killing existing process 71112
-71120 on port 6040...
+Killing existing process 69657
+71375
+72148 on port 6040...
 Starting ZMK Configurator on port 6040 (Debug Mode)...
  * Serving Flask app 'app.py'
  * Debug mode: on
@@ -11,10 +12,5 @@ Press CTRL+C to quit
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 114-739-606
-127.0.0.1 - - [12/Jan/2026 13:56:47] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 13:56:52] "POST /upload HTTP/1.1" 302 -
-127.0.0.1 - - [12/Jan/2026 13:56:52] "GET / HTTP/1.1" 200 -
-python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
-  warnings.warn('resource_tracker: There appear to be %d '
-/opt/homebrew/Cellar/python@3.12/3.12.12/Frameworks/Python.framework/Versions/3.12/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
-  warnings.warn('resource_tracker: There appear to be %d '
+127.0.0.1 - - [12/Jan/2026 14:04:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 14:04:44] "POST /upload HTTP/1.1" 200 -

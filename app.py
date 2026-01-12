@@ -255,6 +255,10 @@ def convert_layout():
         filename = os.path.basename(filepath)
         flash(f'Successfully converted {filename}!')
         
+        # Save last VIL filename for build naming
+        with open('last_vil.txt', 'w') as f:
+            f.write(filename.replace('.vil', ''))
+        
         # Generate Images
         layer_images = draw_layers(KEYMAP_FILE, 'static/images')
         
@@ -272,6 +276,7 @@ def convert_layout():
 import time
 
 BUILD_LOG_FILE = 'build_progress.log'
+LAST_VIL_FILE = 'last_vil.txt'  # Track the last converted VIL file
 build_start_time = None
 
 @app.route('/git_push', methods=['POST'])
@@ -289,8 +294,16 @@ def git_push():
         subprocess.run(args, stdout=open(BUILD_LOG_FILE, 'a'), stderr=subprocess.STDOUT, check=False)
 
     try:
+        # Get last VIL filename for commit message
+        vil_name = "manual"
+        if os.path.exists(LAST_VIL_FILE):
+            with open(LAST_VIL_FILE, 'r') as f:
+                vil_name = f.read().strip() or "manual"
+        
+        commit_msg = f"Build {vil_name} keymap"
+        
         log_cmd(["git", "add", "."])
-        log_cmd(["git", "commit", "--allow-empty", "-m", "Update keymap via Web UI"])
+        log_cmd(["git", "commit", "--allow-empty", "-m", commit_msg])
         # Check if push succeeds
         with open(BUILD_LOG_FILE, 'a') as f:
             f.write("\n> git push\n")

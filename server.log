@@ -1,6 +1,5 @@
-Killing existing process 1926
-3120
-97696 on port 6040...
+Killing existing process 8505
+8507 on port 6040...
 Starting ZMK Configurator on port 6040 (Debug Mode)...
  * Serving Flask app 'app.py'
  * Debug mode: on
@@ -12,23 +11,23 @@ Press CTRL+C to quit
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 114-739-606
-127.0.0.1 - - [12/Jan/2026 15:27:54] "HEAD / HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:06] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:14] "POST /upload HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:14] "GET /static/images/layer_1.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:14] "GET /static/images/layer_0.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:14] "GET /static/images/layer_5.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:14] "GET /static/images/layer_2.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:14] "GET /static/images/layer_6.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:14] "GET /static/images/layer_3.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:14] "GET /static/images/layer_7.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:14] "GET /static/images/layer_4.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:34] "POST /upload HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:34] "GET /static/images/layer_0.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:34] "GET /static/images/layer_1.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:34] "GET /static/images/layer_3.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:34] "GET /static/images/layer_5.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:34] "GET /static/images/layer_2.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:34] "GET /static/images/layer_4.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:34] "GET /static/images/layer_6.png HTTP/1.1" 200 -
-127.0.0.1 - - [12/Jan/2026 15:28:34] "GET /static/images/layer_7.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:46:49] "HEAD / HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "POST /upload HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_3.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_1.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_2.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_4.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_0.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_5.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_6.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:02] "GET /static/images/layer_7.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:10] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:16] "POST /upload HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_0.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_1.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_2.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_4.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_3.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_5.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_6.png HTTP/1.1" 200 -
+127.0.0.1 - - [12/Jan/2026 15:51:16] "GET /static/images/layer_7.png HTTP/1.1" 200 -

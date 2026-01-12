@@ -158,7 +158,10 @@
 
 <body>
     <div class="card">
-        <h1>ZMK Corne Configurator</h1>
+        <h1>ZMK Corne Configurator
+            <button class="btn" onclick="openHelpModal()" style="float: right; font-size: 0.8rem;">📖 Help &
+                Guide</button>
+        </h1>
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -428,7 +431,187 @@
                 document.getElementById('modal-step-error').classList.remove('hidden');
             }
         }
+
+        // Help Modal Functions
+        function openHelpModal() {
+            document.getElementById('help-modal').classList.remove('hidden');
+        }
+        function closeHelpModal() {
+            document.getElementById('help-modal').classList.add('hidden');
+        }
+
+        // Wizard Functions
+        const totalSteps = 6;
+
+        function verifyStep(stepNum) {
+            const stepEl = document.getElementById(`wizard-step-${stepNum}`);
+            const btnEl = stepEl.querySelector('.verify-btn');
+
+            // Mark current step as completed
+            stepEl.classList.add('completed');
+            stepEl.style.opacity = '1';
+            btnEl.innerHTML = '✓ Verified';
+            btnEl.disabled = true;
+            btnEl.style.background = '#9ca3af';
+
+            // Enable next step
+            if (stepNum < totalSteps) {
+                const nextStep = document.getElementById(`wizard-step-${stepNum + 1}`);
+                nextStep.style.opacity = '1';
+                nextStep.querySelector('.verify-btn').disabled = false;
+            }
+
+            // Check if all done
+            if (stepNum === totalSteps) {
+                document.getElementById('wizard-complete').classList.remove('hidden');
+            }
+        }
+
+        function resetWizard() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepEl = document.getElementById(`wizard-step-${i}`);
+                const btnEl = stepEl.querySelector('.verify-btn');
+                stepEl.classList.remove('completed');
+                stepEl.style.opacity = i === 1 ? '1' : '0.5';
+                btnEl.innerHTML = '✓ Done';
+                btnEl.disabled = i !== 1;
+                btnEl.style.background = '';
+            }
+            document.getElementById('wizard-complete').classList.add('hidden');
+        }
     </script>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal-overlay hidden" onclick="if(event.target===this) closeHelpModal()">
+        <div class="modal" style="width: 600px; text-align: left; max-height: 85vh; overflow-y: auto;">
+            <h2 style="margin-top: 0; text-align: center;">� Setup Wizard</h2>
+            <p style="text-align: center; color: #6b7280; margin-bottom: 1.5rem;">Follow each step and verify before
+                continuing</p>
+
+            <!-- Step 1 -->
+            <div class="wizard-step" id="wizard-step-1">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <span class="step-number" id="step-num-1">1</span>
+                    <h3 style="margin: 0; flex: 1;">Unplug Both Keyboard Halves</h3>
+                    <button class="btn btn-green verify-btn" onclick="verifyStep(1)">✓ Done</button>
+                </div>
+                <p style="margin: 0 0 0 2.5rem; color: #6b7280;">Disconnect any USB cables from both sides of your
+                    keyboard.</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="wizard-step" id="wizard-step-2" style="opacity: 0.5;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <span class="step-number" id="step-num-2">2</span>
+                    <h3 style="margin: 0; flex: 1;">Flash the LEFT Side First</h3>
+                    <button class="btn btn-green verify-btn" onclick="verifyStep(2)" disabled>✓ Done</button>
+                </div>
+                <p style="margin: 0 0 0 2.5rem; color: #6b7280;">The left side is the <b>central/host</b>. Double-tap
+                    reset, then use the Flash tool above.</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="wizard-step" id="wizard-step-3" style="opacity: 0.5;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <span class="step-number" id="step-num-3">3</span>
+                    <h3 style="margin: 0; flex: 1;">Flash the RIGHT Side</h3>
+                    <button class="btn btn-green verify-btn" onclick="verifyStep(3)" disabled>✓ Done</button>
+                </div>
+                <p style="margin: 0 0 0 2.5rem; color: #6b7280;">The right side connects wirelessly to the left.
+                    Double-tap reset and flash.</p>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="wizard-step" id="wizard-step-4" style="opacity: 0.5;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <span class="step-number" id="step-num-4">4</span>
+                    <h3 style="margin: 0; flex: 1;">Plug in ONLY the Left Side</h3>
+                    <button class="btn btn-green verify-btn" onclick="verifyStep(4)" disabled>✓ Done</button>
+                </div>
+                <p style="margin: 0 0 0 2.5rem; color: #6b7280;">Connect just the left half via USB. The right half
+                    should power on automatically (if it has a battery).</p>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="wizard-step" id="wizard-step-5" style="opacity: 0.5;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <span class="step-number" id="step-num-5">5</span>
+                    <h3 style="margin: 0; flex: 1;">Verify Halves Are Connected</h3>
+                    <button class="btn btn-green verify-btn" onclick="verifyStep(5)" disabled>✓ Done</button>
+                </div>
+                <p style="margin: 0 0 0 2.5rem; color: #6b7280;">Try pressing keys on both sides. If OLED is present, it
+                    should show "Connected".</p>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="wizard-step" id="wizard-step-6" style="opacity: 0.5;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <span class="step-number" id="step-num-6">6</span>
+                    <h3 style="margin: 0; flex: 1;">Pair via Bluetooth (Optional)</h3>
+                    <button class="btn btn-green verify-btn" onclick="verifyStep(6)" disabled>✓ Done</button>
+                </div>
+                <p style="margin: 0 0 0 2.5rem; color: #6b7280;">Go to Bluetooth Settings on your device. Look for
+                    "Corne" and click Pair. No PIN needed!</p>
+            </div>
+
+            <!-- Completion -->
+            <div id="wizard-complete" class="hidden"
+                style="text-align: center; padding: 1.5rem; background: #ecfdf5; border-radius: 8px; margin-top: 1rem;">
+                <div style="font-size: 3rem;">🎉</div>
+                <h3 style="color: #059669; margin: 0.5rem 0;">Setup Complete!</h3>
+                <p style="color: #6b7280; margin: 0;">Your keyboard is ready to use. Enjoy!</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                <button class="btn" onclick="resetWizard()"
+                    style="margin-right: 0.5rem; background: #6b7280;">Reset</button>
+                <button class="btn" onclick="closeHelpModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .wizard-step {
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .wizard-step.completed {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #e5e7eb;
+            color: #374151;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .wizard-step.completed .step-number {
+            background: #059669;
+            color: white;
+        }
+
+        .verify-btn {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .verify-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+    </style>
 </body>
 
 </html>

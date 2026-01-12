@@ -327,6 +327,30 @@ def check_mount():
         return {"mounted": True, "path": mount_point}
     return {"mounted": False}
 
+@app.route('/list_builds')
+def list_builds():
+    builds = []
+    if os.path.exists(BUILDS_DIR):
+        for build_name in sorted(os.listdir(BUILDS_DIR), reverse=True):
+            build_path = os.path.join(BUILDS_DIR, build_name)
+            if os.path.isdir(build_path):
+                info_file = os.path.join(build_path, 'build_info.json')
+                if os.path.exists(info_file):
+                    try:
+                        with open(info_file) as f:
+                            info = json.load(f)
+                            builds.append({
+                                'name': build_name,
+                                'run_number': info.get('run_number', '?'),
+                                'title': info.get('title', build_name),
+                                'timestamp': info.get('timestamp', '')
+                            })
+                    except:
+                        builds.append({'name': build_name, 'run_number': '?', 'title': build_name, 'timestamp': ''})
+                else:
+                    builds.append({'name': build_name, 'run_number': '?', 'title': build_name, 'timestamp': ''})
+    return {"builds": builds}
+
 @app.route('/flash/<side>', methods=['POST'])
 def flash_firmware(side):
     if side not in ['left', 'right']:
@@ -362,6 +386,12 @@ def flash_firmware(side):
         dest_path = os.path.join(mount_point, uf2_file)
         shutil.copy(uf2_path, dest_path)
         return {"status": "success", "message": f"{side.capitalize()} side flashed with {build_name}!"}
+    except FileNotFoundError as e:
+        # The device unmounts immediately after receiving the UF2 - this is EXPECTED!
+        # If the error is about the destination not existing after copy started, it worked.
+        if mount_point in str(e):
+            return {"status": "success", "message": f"{side.capitalize()} side flashed! (Device reset automatically)"}
+        return {"status": "error", "message": f"Flash Error: {str(e)}"}, 500
     except Exception as e:
         return {"status": "error", "message": f"Flash Error: {str(e)}"}, 500
 

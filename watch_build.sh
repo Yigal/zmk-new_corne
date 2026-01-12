@@ -73,8 +73,10 @@ echo "--- Build Complete ---" >> $LOG_FILE
 if [ $? -eq 0 ]; then
     echo "Downloading firmware..." >> $LOG_FILE
     
-    # Create unique build folder: builds/YYYYMMDD_HHMMSS_RunID
-    BUILD_NAME="$(date +%Y%m%d_%H%M%S)_build${RUN_NUMBER}"
+    # Create descriptive build folder name: sanitized_title_runID
+    # Sanitize the title: lowercase, replace spaces with underscores, remove special chars
+    SAFE_TITLE=$(echo "$RUN_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd '[:alnum:]_' | cut -c1-30)
+    BUILD_NAME="${SAFE_TITLE}_${RUN_ID}"
     BUILD_DIR="builds/$BUILD_NAME"
     mkdir -p "$BUILD_DIR"
     

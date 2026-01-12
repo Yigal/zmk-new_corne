@@ -229,13 +229,16 @@
         <p>Select a build and flash to your keyboard.</p>
         <div style="margin-bottom: 1rem;">
             <label>Select Build:</label>
-            <select id="build-select" style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;">
-                <option value="firmware_latest">Latest Build (firmware_latest)</option>
-                {% for build in builds %}
-                <option value="{{ build.name }}">Build #{{ build.run_number }} - {{ build.title[:30] }} ({{ build.name
-                    }})</option>
-                {% endfor %}
-            </select>
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                <select id="build-select" style="flex: 1; padding: 0.5rem;">
+                    <option value="firmware_latest">Latest Build (firmware_latest)</option>
+                    {% for build in builds %}
+                    <option value="{{ build.name }}">Build #{{ build.run_number }} - {{ build.title[:30] }} ({{
+                        build.name }})</option>
+                    {% endfor %}
+                </select>
+                <button class="btn" onclick="refreshBuilds()" style="padding: 0.5rem 1rem;">🔄</button>
+            </div>
         </div>
         <div class="row">
             <button class="btn btn-green" onclick="openFlashModal('left')">Flash Left Side</button>
@@ -333,9 +336,33 @@
                     document.getElementById('timer').innerText += " (Done!)";
                     document.getElementById('build-btn').innerText = "Push & Trigger Build";
                     document.getElementById('build-btn').disabled = false;
+                    refreshBuilds(); // Auto-refresh builds list when done
                 }
             } catch (e) {
                 console.error("Poll error", e);
+            }
+        }
+
+        // Refresh Builds List
+        async function refreshBuilds() {
+            try {
+                const res = await fetch('/list_builds');
+                const data = await res.json();
+                const select = document.getElementById('build-select');
+                const currentValue = select.value;
+                select.innerHTML = '<option value="firmware_latest">Latest Build (firmware_latest)</option>';
+                data.builds.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b.name;
+                    opt.textContent = `Build #${b.run_number} - ${b.title.substring(0, 30)} (${b.name})`;
+                    select.appendChild(opt);
+                });
+                // Try to restore previous selection
+                if ([...select.options].some(o => o.value === currentValue)) {
+                    select.value = currentValue;
+                }
+            } catch (e) {
+                console.error("Refresh builds error", e);
             }
         }
 

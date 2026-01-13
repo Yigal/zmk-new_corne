@@ -18,7 +18,7 @@
    &kp ESC &kp Q &kp W &kp E &kp R &kp T &kp RBKT &kp Y &kp U &kp I &kp O &kp P
    &mo 1 &kp A &kp S &kp D &kp F &kp G &kp RCTRL &kp H &kp J &kp K &kp L &kp SEMI
    &kp LGUI &kp Z &kp X &kp C &kp V &kp B &kp N &kp M &kp COMMA &kp DOT &kp FSLH &kp LBKT
-                    &kp LCTRL &mo 3 &kp BSPC &kp DEL &kp RET &lt 2 SPACE &mo 3 &kp RCTRL &kp SQT &kp RSHIFT
+                    &kp LCTRL &mo 3 &kp BSPC &kp DEL &kp RET &none /* LT2(KC_SPACE) */ &mo 3 &kp RCTRL &kp SQT &kp RSHIFT
                         >;
                 };
                 layer_1 {
@@ -40,9 +40,9 @@
                 layer_3 {
                         bindings = <
    &kp TAB &kp LS(1) &kp LS(2) &kp LS(3) &kp LS(4) &kp LS(5) &kp LS(5) &kp LS(LBKT) &kp LBKT &kp LS(9) &kp LS(0) &kp RBKT
-   &trans &trans &trans &trans &trans &trans &kp LS(SEMI) &kp KP_PLUS &kp KP_MULTIPLY &kp LS(MINUS) &kp MINUS &kp KP_SLASH
-   &kp LSHIFT &kp LC(Z) &kp LC(X) &kp LC(C) &kp LC(V) &kp LC(Y) &kp LS(7) &kp GRAVE &kp BSLH &kp FSLH &kp LS(1) &trans
-                    &trans &trans &trans &trans &kp RET &trans &trans &kp LS(RBKT) &kp KP_EQUAL &kp LS(6)
+   &trans &trans &trans &trans &trans &trans &kp LS(SEMI) &none /* KC_KP_PLUS */ &none /* KC_KP_ASTERISK */ &kp LS(MINUS) &kp MINUS &none /* KC_KP_SLASH */
+   &kp LSHIFT &none /* KC_UNDO */ &none /* KC_CUT */ &none /* KC_COPY */ &none /* KC_PSTE */ &none /* KC_AGIN */ &kp LS(7) &kp GRAVE &kp BSLH &kp FSLH &kp LS(1) &trans
+                    &trans &trans &trans &trans &kp RET &trans &trans &kp LS(RBKT) &none /* KC_KP_EQUAL */ &kp LS(6)
                         >;
                 };
                 layer_4 {
@@ -56,9 +56,9 @@
                 layer_5 {
                         bindings = <
    &none /* KC_ESCAPE */ &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &trans &kp F6 &kp F7 &kp F8 &kp F9 &kp F10
-   &kp TAB &kp LC(Z) &kp LC(X) &kp LC(C) &kp LC(V) &kp LC(Y) &trans &kp LC(V) &kp LEFT &kp DOWN &kp UP &kp RIGHT
-   &kp RSHIFT &to 1 &to 2 &to 3 &to 4 &kp 5 &kp C_PP &kp C_RW &none /* KC__VOLDOWN */ &none /* KC__VOLUP */ &kp C_FF &kp 5
-                    &trans &trans &trans &to 0 &trans &trans &trans &trans &kp LC(C) &kp C_STOP
+   &kp TAB &none /* KC_UNDO */ &none /* KC_CUT */ &none /* KC_COPY */ &none /* KC_PSTE */ &none /* KC_AGIN */ &trans &none /* KC_PSTE */ &kp LEFT &kp DOWN &kp UP &kp RIGHT
+   &kp RSHIFT &to 1 &to 2 &to 3 &to 4 &kp 5 &kp C_PP &kp C_RW &kp C_VOL_DN &kp C_VOL_UP &kp C_FF &kp 5
+                    &trans &trans &trans &to 0 &trans &trans &trans &trans &none /* KC_COPY */ &kp C_STOP
                         >;
                 };
                 layer_6 {
